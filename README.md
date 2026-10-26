@@ -1,98 +1,115 @@
-# Decentralized course archive: Web3 academic resource management
+# Decentralized Course Archive: Web3 Academic Resource Management
 
-Bottom Line Up Front: This project provides a high-performance Decentralized
-Application (dApp) engineered for secure, transparent, and censorship-resistant
-archiving of pedagogical resources. It leverages the Ethereum blockchain and
-IPFS to ensure data sovereignty and immutable academic records.
-
-## Technical architecture
-
-The application implements a standard Web3 three-tier architecture, ensuring
-total decentralization of both logic and storage:
-
-1.  **On-chain logic**: Solidity smart contracts managing access control,
-    role-based permissions (RBAC), and metadata persistence.
-2.  **Distributed storage**: Integration with IPFS for off-chain file
-    persistence, utilizing content-addressing (CID) to ensure data integrity.
-3.  **Frontend interface**: A React.js single-page application utilizing
-    Web3.js for blockchain state orchestration and provider synchronization.
+The Decentralized Course Archive is a Web3 application (dApp) engineered for secure,
+transparent, and censorship-resistant preservation of academic curricula and pedagogical resources.
+The system leverages the Ethereum blockchain and the InterPlanetary File System (IPFS)
+to achieve cryptographic data sovereignty, immutability, and decentralized access governance.
 
 ---
 
-## Technical stack
-
-*   **Smart contracts**: Solidity ^0.8.x
-*   **Development framework**: Truffle Suite
-*   **Blockchain bridge**: Web3.js
-*   **Distributed storage**: IPFS (Infura/Pinata Gateways)
-*   **Frontend**: React.js / SCSS
-*   **Wallet integration**: MetaMask (EIP-1193 Provider)
-*   **Local network**: Ganache CLI
-
----
-
-## Core implementations
-
-### 1. Decentralized identity and RBAC
-*   **Wallet-based authentication**: Leverages asymmetric cryptography via
-    MetaMask for secure, password-less entry.
-*   **On-chain access control**: Implements granular Role-Based Access Control
-    (Admin, Teacher, Student) within the smart contract to govern file
-    interactions and administrative actions.
-
-### 2. Immutable content archiving
-*   **Hybrid storage model**: Combines on-chain metadata (Ethereum) with
-    off-chain content (IPFS) to optimize gas costs while maintaining
-    decentralization.
-*   **Integrity verification**: Automated mapping of IPFS Content Identifiers
-    (CIDs) to on-chain records, ensuring that archived materials cannot be
-    altered or removed without a verifiable transaction.
-
-### 3. Transparent governance
-*   **Event orchestration**: Emitting Solidity events for critical operations to
-    provide a verifiable audit trail of academic resource lifecycles.
-*   **Transactional transparency**: Every modification to the archive is recorded
-    as a publicly verifiable state transition on the Ethereum network.
-
----
-
-## Project structure
+## Technical Architecture
 
 ```text
-├── course-archive/          # Solidity source & Truffle migrations
-├── course-archive-frontend/ # React source & Web3 integration
-├── package.json            # Workspace dependency orchestration
-└── README.md               # System documentation
++---------------------------------------------------------------+
+|                      Client Presentation                      |
+|   React.js Single-Page Application (course-archive-frontend)  |
++---------------------------------------------------------------+
+            |                                       |
+            | EIP-1193 RPC                          | Pinning Gateway (REST)
+            v                                       v
++-----------------------+               +-----------------------+
+|  MetaMask Provider    |               |  IPFS Storage Network |
+|  - Cryptographic Auth |               |  - Content Addressed  |
+|  - Transaction Sign   |               |  - Immutable CIDs     |
++-----------------------+               +-----------------------+
+            |                                       ^
+            v                                       | (IPFS CID Mapping)
++---------------------------------------------------+-----------+
+|                     On-Chain Smart Contract                   |
+|   Solidity ^0.8.x (course-archive/contracts)                  |
+|   - Granular RBAC (Admin, Teacher, Student)                   |
+|   - Immutable Resource Registry (Title, Faculty, IPFS CID)   |
+|   - Event Emission for Verifiable Audit Logging               |
++---------------------------------------------------------------+
 ```
 
 ---
 
-## Deployment and setup
+## Core Implementations
+
+### 1. Decentralized Identity & Access Governance (RBAC)
+- **Cryptographic Sign-In:** Password-less authentication leveraging asymmetric ECDSA key pairs through MetaMask.
+- **On-Chain Access Matrix:** Enforces granular role-based permissions (Administrator, Faculty, Enrolled Student) directly inside smart contract modifiers.
+
+### 2. Hybrid Storage Architecture
+- **On-Chain Metadata Persistence:** Retains metadata (hashes, course codes, timestamps, author public addresses) on the Ethereum blockchain for deterministic indexing.
+- **Off-Chain IPFS Content Addressing:** Preserves large course syllabi, slides, and datasets across distributed IPFS nodes, referencing them via immutable cryptographic CIDs.
+
+### 3. Event-Driven Auditing
+- **EVM Event Emission:** Broadcasts Solidity events (`CourseUploaded`, `AccessGranted`, `ResourceRevoked`) to provide an immutable and publicly verifiable audit trail.
+
+---
+
+## Project Structure
+
+```text
+decentralized-course-archive/
+├── README.md                          # Technical specification and system architecture
+├── package.json                       # Workspace dependency configuration
+├── course-archive/                    # Truffle smart contract suite
+│   ├── contracts/                     # Solidity smart contract sources (.sol)
+│   ├── migrations/                    # Deployment migration scripts
+│   └── truffle-config.js              # Network configurations (Ganache, Sepolia)
+└── course-archive-frontend/           # Decentralized client interface
+    ├── src/                           # React components, Web3 hooks, and contract ABIs
+    └── package.json                   # Frontend dependencies (React, Web3.js)
+```
+
+---
+
+## Deployment & Setup
 
 ### Prerequisites
-*   Node.js 18+
-*   Truffle Suite
-*   MetaMask Browser Extension
-*   Ganache (Local Blockchain)
+- Node.js 18+ & npm
+- Truffle Suite (`npm install -g truffle`)
+- Ganache (Local Blockchain CLI or Desktop)
+- MetaMask Browser Extension
 
-### 1. Smart contract deployment
-1.  Initialize local blockchain (Ganache).
-2.  Navigate to the contract directory:
-    ```bash
-    cd course-archive
-    truffle migrate --reset
-    ```
+### 1. Deploy Smart Contracts
+```bash
+git clone git@github.com:ind4x/decentralized-course-archive.git
+cd decentralized-course-archive/course-archive
+truffle migrate --reset
+```
 
-### 2. Frontend initialization
-1.  Install dependencies:
-    ```bash
-    cd course-archive-frontend
-    npm install
-    ```
-2.  Start the development server:
-    ```bash
-    npm start
-    ```
+### 2. Launch Client Interface
+```bash
+cd ../course-archive-frontend
+npm install
+npm start
+```
+Open `http://localhost:3000` and connect your MetaMask wallet to the local Ganache RPC endpoint (`http://127.0.0.1:7545` or `8545`).
 
-Authored by Youssef Fellah.
-Developed for the Graduation Project (PFE) - FST Errachidia.
+---
+
+## Technology Stack
+
+- **Smart Contracts:** Solidity ^0.8.x
+- **Development & Testing:** Truffle Suite, Ganache
+- **Blockchain Bridge:** Web3.js
+- **Distributed Storage:** IPFS (InterPlanetary File System)
+- **Frontend Framework:** React.js, SCSS
+- **Wallet Standard:** MetaMask (EIP-1193)
+
+---
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## Author
+
+- **Author:** Youssef Fellah ([ind4x_](https://github.com/ind4x))
+- **Institution:** Mundiapolis University, Engineering Cycle
